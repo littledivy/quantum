@@ -130,7 +130,17 @@ func (self* QuantumSimulator) Run() {
           }
     } else {
       low, high := lohi(quantum_gate.qubit, quantum_gate.target)
-      // TODO
+      for cx0 := uint32(0); cx0 <= uint32(math.Pow(2, float64(low))) - 1; cx0++ {
+        limit := math.Pow(2, float64(high - low - 1))
+        for cx1 := uint32(0); cx1 <= uint32(limit) - 1; cx1++ {
+          for cx2 := uint32(0); cx2 <= uint32(math.Pow(2, float64(self.number_qubits - high - 1))) - 1; cx2++ {
+            qb0 := cx0 + uint32(math.Pow(2, float64(low + 1))) * cx1 + uint32(math.Pow(2, float64(high + 1))) * cx2 + uint32(math.Pow(2, float64(quantum_gate.qubit)))
+            qb1 := qb0 + uint32(math.Pow(2, float64(quantum_gate.target)))
+            swapF := reflect.Swapper(self.state_vector)
+            swapF(int(qb0), int(qb1))
+          }
+        }
+      }
     }
   }
 }
