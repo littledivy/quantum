@@ -148,13 +148,15 @@ func (self *QuantumSimulator) Run() {
 						qb0 := cx0 + int(math.Pow(2, float64(low+1)))*cx1 + int(math.Pow(2, float64(high+1)))*cx2 + int(math.Pow(2, float64(quantum_gate.qubit)))
 						// qb0 + 2**quantum_gate.target
 						qb1 := qb0 + int(math.Pow(2, float64(quantum_gate.target)))
-						swapF(qb0, qb1)
+						if qb1 < len(self.state_vector) && qb0 < len(self.state_vector) {
+							swapF(qb0, qb1)
+						}
 					}
 				}
 			}
 		}
-		self.print()
 	}
+	self.print()
 }
 
 func (self *QuantumSimulator) print() {
