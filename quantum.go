@@ -128,7 +128,18 @@ func (self* QuantumSimulator) Run() {
               }
             }
           }
+    } else {
+      low, high := lohi(quantum_gate.qubit, quantum_gate.target)
+      // TODO
     }
+  }
+}
+
+func lohi(q0, q1 uint32) (uint32, uint32) {
+  if q0 < q1 {
+    return q0, q1
+  } else {
+    return q1, q0
   }
 }
 
