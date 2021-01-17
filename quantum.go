@@ -1,7 +1,10 @@
 package main
 
-import ("fmt"
- "math")
+import (
+ "fmt" 
+ "reflect"
+ "math"
+)
 
 var R2 float32 = 0.70710678118
 
@@ -102,8 +105,29 @@ func superposition(x, y complex128) (complex128, complex128) {
 func (self* QuantumSimulator) Run() {
   self.init_state_vector()
   for _, quantum_gate := range self.circuit {
-    if quantum_gate.gate == "X" {
-    
+    if quantum_gate.gate == "X" || quantum_gate.gate == "H" || quantum_gate.gate == "RX" {
+          // Don't punish me typecasting gods
+          for counter_qubit := uint32(0); counter_qubit <= uint32(math.Pow(2, float64(quantum_gate.qubit))) - 1; counter_qubit++ {
+            for counter_state := uint32(0); counter_state <= uint32(math.Pow(2, float64(self.number_qubits-quantum_gate.qubit-1))) - 1; counter_state++ {
+              qb0 := counter_qubit + uint32(math.Pow(2, float64(quantum_gate.qubit)) + 1)
+              qb1 := qb0 + uint32(math.Pow(2, float64(quantum_gate.qubit)))
+              
+              if quantum_gate.gate == "X" {
+                swapF := reflect.Swapper(self.state_vector)
+                swapF(int(qb0), int(qb1))
+              } 
+              if quantum_gate.gate == "H"{
+                a, b := superposition(self.state_vector[qb0], self.state_vector[qb1])
+                self.state_vector[qb0] = a
+                self.state_vector[qb1] = b
+              }
+              if quantum_gate.gate == "RX" {
+                a, b := turn(self.state_vector[qb0], self.state_vector[qb1], quantum_gate.angle)
+                self.state_vector[qb0] = a
+                self.state_vector[qb1] = b
+              }
+            }
+          }
     }
   }
 }
