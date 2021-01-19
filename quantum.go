@@ -174,6 +174,12 @@ func lohi(q0, q1 int) (int, int) {
 }
 
 func main() {
+	c1 := NewQuantumComputer(3)
+	c1.Initialize(5)
+	c1.Apply(IdentityGate(3))
+	c1.Collapse()
+	fmt.Println(c1.Value())
+	panic("")
 	qc := NewQuantumCircuit(15)
 	qc.H(0)
 	for qubit := 1; qubit <= 15; qubit++ {
